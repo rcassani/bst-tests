@@ -4,7 +4,7 @@ function test_brainstorm(bstTestName, bstUserName)
 % USAGE: test_brainstorm(testName, brainstormUsername)
 %
 % INPUTS:
-%    - bstTestName     : Test to run, usually a script in the ./toolbox/scripts folder
+%    - bstTestName  : Test to run, usually a script in the ./toolbox/scripts folder
 %    - bstUserName  : Cell array of signals {[nSignals1, nSamples1], [nSignals2, nSamples2], ...}
 %
 % For a given bstTestName, the script does:
@@ -35,6 +35,15 @@ if nargin < 2 || isempty(bstUserName)
     bstUserName = '';
 end
 
+% Add path 'bst-tests' with support functions
+% 'bst-tests' and 'brainstorm3' are expected at the same level
+bstTestsDir = fullfile(fileparts(bst_get('BrainstormHomeDir')), 'bst-tests');
+if (exist(bstTestsDir, 'dir') == 7)
+    addpath(bstTestsDir);
+else
+    error('Dir ''bst-tests'' should be placed at the same level as ''brainstorm3'' ');
+end
+
 % Check that Brainstorm is run with local database
 bstDbDir = bst_get('BrainstormDbDir');
 if isempty(regexp(bstDbDir, 'local_db$', 'once'))
@@ -63,12 +72,15 @@ switch bstTestName
                 
 end
 
+% Host info
+hostInfo = test_hostinfo();
+
 % Sending email
 % Process: Send report by email
 bst_process('CallProcess', 'process_report_email', [], [], ...
     'username',   bstUserName, ...
     'cc',         '', ...
-    'subject',    ['Test: ' bstTestName ' completed'], ...
+    'subject',    ['[Completed] ' bstTestName ' @ ' hostInfo], ...
     'reportfile', 'last', ...
     'full',       1);
 
