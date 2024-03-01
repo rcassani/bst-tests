@@ -1,8 +1,14 @@
 # Brainstorm tests
-
+## Description
 Scripts to test Brainstorm releases (Source and Binary)
 
-This repo is thought to be used only by the Brainstorm team, to automatically test Brainstorm source code with tutorial scripts. Data is downloaded using the neuroimage FTP server with.
+**Only for the Brainstorm team**\*
+
+This repo can be used to automate tests of the Brainstorm source code with tutorial scripts.
+Data is downloaded using the neuroimage FTP server with, links available [here](https://neuroimage.usc.edu/bst/download.php)
+
+\* While all the data is public, it is behind the registration to Brainstorm
+
 
 ## Testing Brainstorm source distribution
 
@@ -26,22 +32,42 @@ Run the `Run tutorial (on Brainstorm source)` GitHub action in the `master` bran
 | tutorial_practicalmeeg    | [Link](https://neuroimage.usc.edu/brainstorm/WorkshopParis2019)                  | 🐧🪟🍎 |  30 min |
 | tutorial_raw              | [Link](https://neuroimage.usc.edu/brainstorm/Tutorials/MedianNerveCtf)           | 🐧🪟🍎 |  10 min |
 | tutorial_resting          | [Link](https://neuroimage.usc.edu/brainstorm/Tutorials/Resting)                  | 🐧🪟❌ |  XX min |
-| tutorial_simulations      | [Link](https://neuroimage.usc.edu/brainstorm/Tutorials/Simulations)              | ❌❌🍎 |  XX min |
+| tutorial_simulations      | [Link](https://neuroimage.usc.edu/brainstorm/Tutorials/Simulations)              | 🐧🪟🍎 |  35 min |
 | tutorial_yokogawa         | [Link](https://neuroimage.usc.edu/brainstorm/Tutorials/Yokogawa)                 | 🐧🪟🍎 |  60 min |
 
 
 ### Locally
-You need a physical (or a virtual) machine with the OS to test and their respective [Matlab Runtime](https://www.mathworks.com/products/compiler/matlab-runtime.html) installed.
+With Matlab installed,
+1. Clone this repository and the `brainstorm3` repo in the same directory. I.e, `./bst-test` and `./brainstorm3`
+2. Create a symbolic link to `./bst-test/test_brainstorm.m` in `./brainbstorm3` (or copy the file)
 
-**Execution:**
+#### Linux
 ```
 matlab22b . -nodisplay -r "brainstorm test_brainstorm.m tutorial_connectivity BRAINSTORM_USERNAME local"
 ```
+
+#### Windows
+```
+matlab.exe -batch "brainstorm test_brainstorm.m tutorial_connectivity BRAINSTORM_USERNAME local"
+```
+
+#### macOS
+```
+matlab.exe -batch "brainstorm test_brainstorm.m tutorial_connectivity BRAINSTORM_USERNAME local"
+```
+
 ## Testing Brainstorm binary distribution
 
 ### Locally
 You need a physical (or a virtual) machine with the OS to test and their respective [Matlab Runtime](https://www.mathworks.com/products/compiler/matlab-runtime.html) installed.
+
+#### Linux
 **Execution:**
 ```
 ./brainstorm3.command /usr/local/MATLAB/MATLAB_Runtime/R2022b test_brainstorm.m tutorial_connectivity BRAINSTORM_USERNAME local
 ```
+
+#### Windows
+
+
+#### macOS
