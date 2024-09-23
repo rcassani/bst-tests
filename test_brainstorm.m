@@ -327,4 +327,3 @@ end
 if stopBstAtEnd
     brainstorm stop
 end
-end
