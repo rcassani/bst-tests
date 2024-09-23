@@ -118,6 +118,7 @@ disp('3.3')
 
 
 %% ===== DATA AND REPORT DIRS =====
+disp('3.4')
 % Data directory
 if ~exist(dataDir, 'dir')
     mkdir(dataDir);
@@ -129,13 +130,17 @@ end
 
 
 %% ===== RUN TUTORIALS, SAVE REPORTS AND SEND EMAIL =====
+disp('3.5')
 for iTutorial = 1 : length(tutorialNames)
     tutoriallName = tutorialNames{iTutorial};
     % Clean report history
+    disp('3.6')
     bst_report('ClearHistory', 0);
     infoStr = 'Error preparing file for tutorial';
+    disp('3.7')
     % === Run tutorial
     disp(tutoriallName)
+    disp('3.8')
     switch tutoriallName
         case 'tutorial_introduction'
             dataFile = get_tutorial_data(dataDir, 'sample_introduction.zip', bstUser, bstPwd);
