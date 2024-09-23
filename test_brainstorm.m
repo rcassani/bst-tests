@@ -123,7 +123,7 @@ for iTutorial = 1 : length(tutorialNames)
     % === Run tutorial
     switch tutoriallName
         case 'tutorial_introduction'
-            dataFile = getTutorialFile(dataDir, 'sample_introduction.zip', bstUser, bstPwd);
+            dataFile = get_tutorial_data(dataDir, 'sample_introduction.zip', bstUser, bstPwd);
             if exist(dataFile, 'file')
                 bst_unzip(dataFile, dataDir);
                 tutorial_introduction(dataDir);
@@ -143,27 +143,27 @@ for iTutorial = 1 : length(tutorialNames)
             end
 
         case 'tutorial_dba'
-            dataFile = getTutorialFile(dataDir, 'TutorialDba.zip', bstUser, bstPwd);
+            dataFile = get_tutorial_data(dataDir, 'TutorialDba.zip', bstUser, bstPwd);
             if exist(dataFile, 'file')
                 tutorial_dba(dataFile);
             end
 
         case 'tutorial_ephys'
-            dataFile = getTutorialFile(dataDir, 'sample_ephys.zip', bstUser, bstPwd);
+            dataFile = get_tutorial_data(dataDir, 'sample_ephys.zip', bstUser, bstPwd);
             if exist(dataFile, 'file')
                 bst_unzip(dataFile, dataDir);
                 tutorial_ephys(dataDir);
             end
 
         case 'tutorial_epilepsy'
-            dataFile = getTutorialFile(dataDir, 'sample_epilepsy.zip', bstUser, bstPwd);
+            dataFile = get_tutorial_data(dataDir, 'sample_epilepsy.zip', bstUser, bstPwd);
             if exist(dataFile, 'file')
                 bst_unzip(dataFile, dataDir);
                 tutorial_epilepsy(dataDir);
             end
 
         case 'tutorial_epileptogenicity'
-            dataFile = getTutorialFile(dataDir, 'tutorial_epimap_bids.zip', bstUser, bstPwd);
+            dataFile = get_tutorial_data(dataDir, 'tutorial_epimap_bids.zip', bstUser, bstPwd);
             if exist(dataFile, 'file')
                 bst_unzip(dataFile, dataDir);
                 tutorial_epileptogenicity(dataDir);
@@ -204,7 +204,7 @@ for iTutorial = 1 : length(tutorialNames)
 %             tutorial_hcp(tmpDir);
 
         case 'tutorial_neuromag'
-            dataFile = getTutorialFile(dataDir, 'sample_neuromag.zip', bstUser, bstPwd);
+            dataFile = get_tutorial_data(dataDir, 'sample_neuromag.zip', bstUser, bstPwd);
             if exist(dataFile, 'file')
                 bst_unzip(dataFile, dataDir);
                 tutorial_neuromag(dataDir);
@@ -215,35 +215,35 @@ for iTutorial = 1 : length(tutorialNames)
             % tutorial_omega(tmpDir);
 
         case 'tutorial_phantom_ctf'
-            dataFile = getTutorialFile(dataDir, 'sample_phantom_ctf.zip', bstUser, bstPwd);
+            dataFile = get_tutorial_data(dataDir, 'sample_phantom_ctf.zip', bstUser, bstPwd);
             if exist(dataFile, 'file')
                 bst_unzip(dataFile, dataDir);
                 tutorial_phantom_ctf(dataDir);
             end
 
         case 'tutorial_phantom_elekta'
-            dataFile = getTutorialFile(dataDir, 'sample_phantom_elekta.zip', bstUser, bstPwd);
+            dataFile = get_tutorial_data(dataDir, 'sample_phantom_elekta.zip', bstUser, bstPwd);
             if exist(dataFile, 'file')
                 bst_unzip(dataFile, dataDir);
                 tutorial_phantom_elekta(dataDir);
             end
 
         case 'tutorial_practicalmeeg'
-            dataFile = getTutorialFile(dataDir, 'tutorial_practicalmeeg.zip', bstUser, bstPwd);
+            dataFile = get_tutorial_data(dataDir, 'tutorial_practicalmeeg.zip', bstUser, bstPwd);
             if exist(dataFile, 'file')
                 bst_unzip(dataFile, dataDir);
                 tutorial_practicalmeeg(bst_fullfile(dataDir, 'tutorial_practicalmeeg'));
             end
 
         case 'tutorial_raw'
-            dataFile = getTutorialFile(dataDir, 'sample_raw.zip', bstUser, bstPwd);
+            dataFile = get_tutorial_data(dataDir, 'sample_raw.zip', bstUser, bstPwd);
             if exist(dataFile, 'file')
                 bst_unzip(dataFile, dataDir);
                 tutorial_raw(dataDir);
             end
 
         case 'tutorial_resting'
-            dataFile = getTutorialFile(dataDir, 'sample_resting.zip', bstUser, bstPwd);
+            dataFile = get_tutorial_data(dataDir, 'sample_resting.zip', bstUser, bstPwd);
             if exist(dataFile, 'file')
                 bst_unzip(dataFile, dataDir);
                 tutorial_resting(dataDir);
@@ -253,7 +253,7 @@ for iTutorial = 1 : length(tutorialNames)
             tutorial_simulations();
 
         case 'tutorial_yokogawa'
-            dataFile = getTutorialFile(dataDir, 'sample_yokogawa.zip', bstUser, bstPwd);
+            dataFile = get_tutorial_data(dataDir, 'sample_yokogawa.zip', bstUser, bstPwd);
             if exist(dataFile, 'file')
                 bst_unzip(dataFile, dataDir);
                 tutorial_yokogawa(dataDir);
@@ -318,34 +318,4 @@ end
 if stopBstAtEnd
     brainstorm stop
 end
-end
-
-%% ===== GET FILE =====
-function dataFullFile = getTutorialFile(dataDir, dataFile, bstUserName, bstPwd)
-    % Prepare the data file to run the tutorial
-    % Download if needed and credentials are provided
-    dataFullFile = bst_fullfile(dataDir, dataFile);
-    % Try to download if file does not exist
-    if ~exist(dataFullFile, 'file')
-        if ~isempty(bstUserName) && ~isempty(bstPwd)
-            dwnUrl = sprintf('http://neuroimage.usc.edu/bst/download.php?file=%s&user=%s&mdp=%s', ...
-                             urlencode(dataFile), urlencode(bstUserName), urlencode(bstPwd));
-            dataFullFile = bst_fullfile(dataDir, dataFile);
-            errMsg = bst_websave(dataFullFile, dwnUrl);
-            % Return if error
-            if ~isempty(errMsg) || ~exist(dataFullFile, 'file')
-                dataFullFile = '';
-                return
-            end
-        else
-            dataFullFile = '';
-            return
-        end
-    end
-    % Check size, if less than 50 bytes, error with the downloaded file
-    d = dir(dataFullFile);
-    if d.bytes < 50
-        dataFullFile = '';
-        return
-    end
 end
