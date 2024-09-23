@@ -50,6 +50,15 @@ if nargin < 4 || isempty(bstPwd)
     bstPwd = '';
 end
 
+% Add path 'bst-tests' for support function
+% 'bst-tests' and 'brainstorm3' are expected at the same level
+bstTestsDir = fullfile(fileparts(bst_get('BrainstormHomeDir')), 'bst-tests');
+if (exist(bstTestsDir, 'dir') == 7)
+    addpath(bstTestsDir);
+else
+    error('Dir ''bst-tests'' should be placed at the same level as ''brainstorm3'' ');
+end
+
 % All tutorials
 if ischar(tutorialNames)
     if strcmpi(tutorialNames, 'all')
