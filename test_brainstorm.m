@@ -98,6 +98,7 @@ res = exist('brainstorm.m', 'file');
 if res ~=2
     error('Could not find "brainstorm.m" in Matlab path.');
 end
+disp('3.1')
 
 % Start Brainstorm without GUI and with local database
 stopBstAtEnd = 0;
@@ -105,13 +106,15 @@ if ~brainstorm('status')
     brainstorm nogui local
     stopBstAtEnd = 1;
 end
-
+disp('3.2')
+disp(brainstorm('status'))
 % Check that Brainstorm is run with local database
 bstDbDir = bst_get('BrainstormDbDir');
 if isempty(regexp(bstDbDir, 'local_db$', 'once'))
     warning('Run this script with brainstorm using local db');
     return
 end
+disp('3.3')
 
 
 %% ===== DATA AND REPORT DIRS =====
