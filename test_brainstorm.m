@@ -50,6 +50,7 @@ if nargin < 4 || isempty(bstPwd)
     bstPwd = '';
 end
 
+disp('1')
 % Add path 'bst-tests' for support function
 % 'bst-tests' and 'brainstorm3' are expected at the same level
 bstTestsDir = fullfile(fileparts(bst_get('BrainstormHomeDir')), 'bst-tests');
@@ -58,6 +59,7 @@ if (exist(bstTestsDir, 'dir') == 7)
 else
     error('Dir ''bst-tests'' should be placed at the same level as ''brainstorm3'' ');
 end
+disp('2')
 
 % All tutorials
 if ischar(tutorialNames)
@@ -88,7 +90,7 @@ if ischar(tutorialNames)
         tutorialNames = {tutorialNames};
     end
 end
-
+disp('3')
 
 %% ===== START BRAINSTORM =====
 % Check that Brainstorm is in the Matlab path
@@ -130,6 +132,7 @@ for iTutorial = 1 : length(tutorialNames)
     bst_report('ClearHistory', 0);
     infoStr = 'Error preparing file for tutorial';
     % === Run tutorial
+    disp(tutoriallName)
     switch tutoriallName
         case 'tutorial_introduction'
             dataFile = get_tutorial_data(dataDir, 'sample_introduction.zip', bstUser, bstPwd);
@@ -268,9 +271,11 @@ for iTutorial = 1 : length(tutorialNames)
                 tutorial_yokogawa(dataDir);
             end
     end
-
+    disp(tutoriallName)
+    
     % Get report (available if tutorial was run)
     [~, ReportFile] = bst_report('GetReport', 'last');
+    disp('4')
     % Was the tutorial run?
     wasRun = ~isempty(ReportFile);
     % Generate not-executed report
@@ -287,7 +292,7 @@ for iTutorial = 1 : length(tutorialNames)
         [~, baseName] = bst_fileparts(ReportFile);
         bst_report('Export', ReportFile, bst_fullfile(reportDir, [baseName, '.html']));
     end
-
+    disp('5')
     % === Report email
     if ~isempty(bstUser)
         % Tutorial info
@@ -321,6 +326,7 @@ for iTutorial = 1 : length(tutorialNames)
             'reportfile', ReportFile, ...
             'full',       1);
     end
+    disp('6')
 end
 
 % Stop Brainstorm
