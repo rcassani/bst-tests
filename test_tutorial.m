@@ -1,7 +1,6 @@
-function test_brainstorm(tutorialNames, dataDir, reportDir, bstUser, bstPwd)
-% TEST_BRAINSTORM Test Brainstorm by running tutorial scripts from scratch
-%               - It requires tor run Brainstorm with 'local' database
-%               - 'test_brainstorm.m' should in the same dir as 'brainstorm.m'
+function test_tutorial(tutorialNames, dataDir, reportDir, bstUser, bstPwd)
+% TEST_TUTORIAL Test Brainstorm by running tutorial scripts
+%               If Brainstorm is not running, it is started without GUI and with 'local' database
 %
 % USAGE: test_brainstorm(tutorialNames, dataDir, reportDir, bstUser, bstPwd)
 %
@@ -15,7 +14,7 @@ function test_brainstorm(tutorialNames, dataDir, reportDir, bstUser, bstPwd)
 % For a given tutorial in 'tutorialNames', the script does:
 %    1. Find/get the tutorial data (download if bstUser and bstPwd are available)
 %    2. Run tutorial script
-%    3. Send report by email to bstUserName
+%    3. Send report by email to bstUser
 %
 % @=============================================================================
 % 
@@ -46,20 +45,9 @@ end
 if nargin < 4 || isempty(bstUser)
     bstUser = '';
 end
-if nargin < 4 || isempty(bstPwd)
+if nargin < 5 || isempty(bstPwd)
     bstPwd = '';
 end
-
-disp('1')
-% Add path 'bst-tests' for support function
-% 'bst-tests' and 'brainstorm3' are expected at the same level
-bstTestsDir = fullfile(fileparts(bst_get('BrainstormHomeDir')), 'bst-tests');
-if (exist(bstTestsDir, 'dir') == 7)
-    addpath(bstTestsDir);
-else
-    error('Dir ''bst-tests'' should be placed at the same level as ''brainstorm3'' ');
-end
-disp('2')
 
 % All tutorials
 if ischar(tutorialNames)
@@ -85,12 +73,12 @@ if ischar(tutorialNames)
                          'tutorial_resting', ...
                          'tutorial_simulations', ...
                          'tutorial_yokogawa', ...
-                    };
+                        };
     else
         tutorialNames = {tutorialNames};
     end
 end
-disp('3')
+
 
 %% ===== START BRAINSTORM =====
 % Check that Brainstorm is in the Matlab path
@@ -98,27 +86,15 @@ res = exist('brainstorm.m', 'file');
 if res ~=2
     error('Could not find "brainstorm.m" in Matlab path.');
 end
-disp('3.1')
-
 % Start Brainstorm without GUI and with local database
 stopBstAtEnd = 0;
 if ~brainstorm('status')
     brainstorm nogui local
     stopBstAtEnd = 1;
 end
-disp('3.2')
-disp(brainstorm('status'))
-% Check that Brainstorm is run with local database
-bstDbDir = bst_get('BrainstormDbDir');
-if isempty(regexp(bstDbDir, 'local_db$', 'once'))
-    warning('Run this script with brainstorm using local db');
-    return
-end
-disp('3.3')
 
 
 %% ===== DATA AND REPORT DIRS =====
-disp('3.4')
 % Data directory
 if ~exist(dataDir, 'dir')
     mkdir(dataDir);
@@ -130,17 +106,12 @@ end
 
 
 %% ===== RUN TUTORIALS, SAVE REPORTS AND SEND EMAIL =====
-disp('3.5')
 for iTutorial = 1 : length(tutorialNames)
     tutoriallName = tutorialNames{iTutorial};
     % Clean report history
-    disp('3.6')
     bst_report('ClearHistory', 0);
     infoStr = 'Error preparing file for tutorial';
-    disp('3.7')
     % === Run tutorial
-    disp(tutoriallName)
-    disp('3.8')
     switch tutoriallName
         case 'tutorial_introduction'
             dataFile = get_tutorial_data(dataDir, 'sample_introduction.zip', bstUser, bstPwd);
@@ -279,11 +250,9 @@ for iTutorial = 1 : length(tutorialNames)
                 tutorial_yokogawa(dataDir);
             end
     end
-    disp(tutoriallName)
-    
+
     % Get report (available if tutorial was run)
     [~, ReportFile] = bst_report('GetReport', 'last');
-    disp('4')
     % Was the tutorial run?
     wasRun = ~isempty(ReportFile);
     % Generate not-executed report
@@ -295,12 +264,13 @@ for iTutorial = 1 : length(tutorialNames)
         bst_report('Info', '', '', infoStr);
         ReportFile = bst_report('Save');
     end
+
     % === Save report file
     if ~isempty(reportDir) && ~isempty(ReportFile)
         [~, baseName] = bst_fileparts(ReportFile);
         bst_report('Export', ReportFile, bst_fullfile(reportDir, [baseName, '.html']));
     end
-    disp('5')
+
     % === Report email
     if ~isempty(bstUser)
         % Tutorial info
@@ -334,7 +304,6 @@ for iTutorial = 1 : length(tutorialNames)
             'reportfile', ReportFile, ...
             'full',       1);
     end
-    disp('6')
 end
 
 % Stop Brainstorm
